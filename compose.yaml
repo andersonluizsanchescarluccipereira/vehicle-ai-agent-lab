@@ -1,0 +1,21 @@
+# Conteiner somente do OpenSearch. Ollama/API/MCP rodam no host Linux Mint.
+services:
+  opensearch:
+    image: docker.io/opensearchproject/opensearch:2.11.1
+    container_name: vehicle-agent-opensearch
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - bootstrap.memory_lock=false
+    ports:
+      - '127.0.0.1:9200:9200'
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -fsS http://localhost:9200/_cluster/health >/dev/null']
+      interval: 20s
+      timeout: 10s
+      retries: 15
+volumes:
+  opensearch_data:
